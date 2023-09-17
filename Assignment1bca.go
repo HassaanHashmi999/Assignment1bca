@@ -1,4 +1,4 @@
-package Assignment1bca
+package assignment01bca
 
 import (
 	"crypto/sha256"
@@ -19,9 +19,6 @@ type BlockList struct {
 }
 
 func (b *BlockList) NewBlock(transaction string, nonce int, previousHash string) *Block {
-	// A method to add new block. To keep things simple, you could provide a string of your choice as a transaction (e.g., "bob to alice"). Also, use any integer value as a nonce. The CreateHash()
-	// method will provide you the block Hash value.
-
 	bl := new(Block)
 	bl.transaction = transaction
 	bl.nonce = nonce
@@ -35,12 +32,9 @@ func (b *BlockList) NewBlock(transaction string, nonce int, previousHash string)
 	return bl
 }
 
-func ListBlocks(ls *BlockList) {
-	// A method to print all the blocks in a nice format showing block data such as transactions, nonce, previous hash, current block hash.
-
+func (b *BlockList) ListBlocks() {
 	counter := 1
-	for _, i := range ls.blocks {
-
+	for _, i := range b.blocks {
 		fmt.Printf("%s Transaction %d %s \n", strings.Repeat("=", 35), counter, strings.Repeat("=", 35))
 		fmt.Println("Transaction:   ", i.transaction)
 		fmt.Println("Nonce:         ", i.nonce)
@@ -50,9 +44,7 @@ func ListBlocks(ls *BlockList) {
 	}
 }
 
-func ChangeBlock(b *BlockList, count int, transaction string) *Block {
-	// Function to change block transaction of the given block reference
-
+func (b *BlockList) ChangeBlock(count int, transaction string) *Block {
 	count = count - 1
 	b.blocks[count].transaction = transaction
 	Stri := strconv.Itoa(b.blocks[count].nonce) + b.blocks[count].previousHash + b.blocks[count].transaction
@@ -62,9 +54,7 @@ func ChangeBlock(b *BlockList, count int, transaction string) *Block {
 	return modBlock
 }
 
-func VerifyChain(b *BlockList) int {
-	// Function to verify blockchain in case any chages are made. This can be done in two different ways
-
+func (b *BlockList) VerifyChain() int {
 	count := 0
 	flag := 0
 
@@ -79,58 +69,7 @@ func VerifyChain(b *BlockList) int {
 }
 
 func CalculateHash(stringToHash string) string {
-	// Function for calculating hash of a block
-
 	hash := sha256.Sum256([]byte(stringToHash))
 	Hash := fmt.Sprintf("%x", hash)
-
 	return Hash
-}
-
-func main() {
-	ls := new(BlockList)
-	//genesis block
-	ls.NewBlock("Alice to Bob", 1111, "")
-
-	previousHash := strconv.Itoa(ls.blocks[0].nonce) + ls.blocks[0].previousHash + ls.blocks[0].transaction
-	calcPH := CalculateHash(previousHash)
-	ls.NewBlock("Clint to Adeel", 2222, calcPH)
-
-	previousHash = strconv.Itoa(ls.blocks[1].nonce) + ls.blocks[1].previousHash + ls.blocks[1].transaction
-	calcPH = CalculateHash(previousHash)
-	ls.NewBlock("Bard to Reese", 3333, calcPH)
-
-	previousHash = strconv.Itoa(ls.blocks[2].nonce) + ls.blocks[2].previousHash + ls.blocks[2].transaction
-	calcPH = CalculateHash(previousHash)
-	ls.NewBlock("Ali to Khattak", 4444, calcPH)
-
-	previousHash = strconv.Itoa(ls.blocks[3].nonce) + ls.blocks[3].previousHash + ls.blocks[3].transaction
-	calcPH = CalculateHash(previousHash)
-	ls.NewBlock("Anas to Hassaan", 5555, calcPH)
-
-	ListBlocks(ls)
-
-	block := 3
-	NmodBlock := ChangeBlock(ls, block, "Adil to Kamran")
-
-	fmt.Println()
-	fmt.Printf("%s Changing Block %d %s \n", strings.Repeat("-", 35), block, strings.Repeat("-", 35))
-	fmt.Println()
-
-	fmt.Println()
-	fmt.Printf("%s The Modified Block %s \n", strings.Repeat("=", 35), strings.Repeat("=", 35))
-	fmt.Println("Transaction:   ", NmodBlock.transaction)
-	fmt.Println("Nonce:         ", NmodBlock.nonce)
-	fmt.Println("Previous Hash: ", NmodBlock.previousHash)
-	fmt.Println()
-
-	fmt.Println()
-	fmt.Printf("%s Verifying The Blockchain %s \n", strings.Repeat("$", 35), strings.Repeat("$", 35))
-	fmt.Println()
-
-	detected := VerifyChain(ls)
-	if detected == 0 {
-		fmt.Println("BlockChain Verified!")
-		fmt.Println("No Changes Detected!!")
-	}
 }
