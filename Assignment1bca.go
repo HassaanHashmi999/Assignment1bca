@@ -1,4 +1,4 @@
-package assignment01bca
+package Assignment01bca
 
 import (
 	"crypto/sha256"
